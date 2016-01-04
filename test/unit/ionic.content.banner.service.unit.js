@@ -70,6 +70,19 @@ describe('Ionic Content Banner Service', function() {
     expect(scope.autoClose).toBe(7000);
   }));
 
+  it('should create a banner from just a string', inject(function($ionicContentBanner, $timeout, $document) {
+    var text = 'quick message';
+    setUpDOM($document);
+    var close = $ionicContentBanner.quick(text);
+    $timeout.flush();
+    $timeout.flush();
+    var scope = close.$scope;
+
+    expect(scope.type).toEqual('info');
+    expect(scope.text.length).toEqual(1)
+    expect(scope.text[0]).toEqual(text);
+  }));
+
   it('show should add class on show', inject(function() {
     var scope = setup();
     expect(scope.element[0].classList.contains('content-banner-in')).toBe(true);

@@ -166,8 +166,29 @@
           return scope.close;
         }
 
+        var lastBannerFn;
+        /**
+         * @ngdoc method
+         * @name $ionicContentBanner#quick
+         * @param {String} text the text for the banner
+         * @param {String} [type] The optional type.
+         * @description
+         * A shortcut for creating a banner from just a string. This will also close an banners that were previously opened with this shortcut.
+         * This could be improved to be configuratble through provider options, but for now it just have my preferred defaults baked in.
+       */
+        var quickBanner = function(text, type){
+          var options = {text: [text], position: 'bottom', autoClose: 3000, icon: '' }
+          if ( angular.isDefined(type) ){ options.type = type; }
+          if ( lastBannerFn ){
+            lastBannerFn();
+          }
+          lastBannerFn = contentBanner(options);
+          return lastBannerFn;
+        };
+
         return {
           show: contentBanner,
+          quick: quickBanner,
           closeAll: closeAll
         };
       }]);
