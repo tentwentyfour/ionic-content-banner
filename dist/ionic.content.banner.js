@@ -1,3 +1,4 @@
+angular.module('jett.ionic.content.banner', ['ionic']);
 /* global angular */
 (function (angular) {
   'use strict';

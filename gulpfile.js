@@ -21,7 +21,7 @@ gulp.task('dist', ['karma', 'scripts']);
 
 gulp.task('scripts', function() {
   return gulp.src([
-    'js/ionic.content.banner.js',
+    'js/ionic.content.banner.app.js',
     'js/ionic.content.banner.directive.js',
     'js/ionic.content.banner.service.js'
   ])
