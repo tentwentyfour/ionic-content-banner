@@ -15,7 +15,8 @@
       '$compile',
       '$timeout',
       '$ionicPlatform',
-      function ($document, $rootScope, $compile, $timeout, $ionicPlatform) {
+      '$log',
+      function ($document, $rootScope, $compile, $timeout, $ionicPlatform, $log) {
         var cacheIndex = 0,
           bannerCache = {};
 
@@ -139,7 +140,13 @@
               return;
             }
 
-            getActiveView(body).querySelector('.scroll-content').appendChild(element[0]);
+            var contentDiv = getActiveView(body);
+            if ( angular.isUndefined(contentDiv) ){
+              $log.info('content banner failed to show (no view):' + opts.text[0] );
+              return;
+            }
+
+            contentDiv.querySelector('.scroll-content').appendChild(element[0]);
 
             ionic.requestAnimationFrame(function () {
               $timeout(function () {
@@ -157,7 +164,7 @@
           //set small timeout to let ionic set the active/cached view
           $timeout(function () {
             scope.show();
-          }, 10, false);
+          }, 30, false);
 
           // Expose the scope on $ionContentBanner's return value for the sake of testing it.
           scope.close.$scope = scope;
