@@ -15,7 +15,10 @@
       '$compile',
       '$timeout',
       '$ionicPlatform',
-      function ($document, $rootScope, $compile, $timeout, $ionicPlatform) {
+      '$log',
+      function ($document, $rootScope, $compile, $timeout, $ionicPlatform, $log) {
+        var cacheIndex = 0,
+          bannerCache = {};
 
         function isActiveView (node) {
           // walk up the child-parent node chain until we get to the root or the BODY
@@ -47,6 +50,26 @@
           })[0];
         }
 
+        function cacheBanner(scope){
+          bannerCache[cacheIndex] = scope;
+          scope.bannerCacheIndex = cacheIndex;
+          cacheIndex ++;
+        }
+
+        /**
+         * @ngdoc method
+         * @name $ionicContentBanner#closeAll
+         * @description
+         * Closes all current banners
+         */
+        function closeAll(){
+          $timeout(function(){
+            angular.forEach(bannerCache, function(scope){
+              scope.close();
+            });
+          });
+        }
+
         /**
          * @ngdoc method
          * @name $ionicContentBanner#show
@@ -63,11 +86,20 @@
             type: 'info',
             $deregisterBackButton: angular.noop,
             closeOnStateChange: true,
-            autoClose: null
+            autoClose: null,
+            position: null
           }, opts);
 
           // Compile the template
-          var classes = 'content-banner ' + scope.type + ' content-banner-transition-' + scope.transition;
+          var transitionClass = 'content-banner-transition-' + scope.transition;
+          var classes = 'content-banner ' + scope.type;
+          if ( scope.position === 'bottom' ){
+            classes += ' content-banner-bottom';
+            if ( scope.transition === 'vertical' ){
+              transitionClass += '-bottom';
+            }
+          }
+          classes += ' ' + transitionClass;
           var element = scope.element = $compile('<ion-content-banner class="' + classes + '"></ion-content-banner>')(scope);
           var body = $document[0].body;
 
@@ -97,6 +129,8 @@
               }, 400);
             });
 
+            delete bannerCache[scope.bannerCacheIndex];
+
             scope.$deregisterBackButton();
             stateChangeListenDone();
           };
@@ -106,7 +140,13 @@
               return;
             }
 
-            getActiveView(body).querySelector('.scroll-content').appendChild(element[0]);
+            var contentDiv = getActiveView(body);
+            if ( angular.isUndefined(contentDiv) ){
+              $log.info('content banner failed to show (no view):' + opts.text[0] );
+              return;
+            }
+
+            contentDiv.querySelector('.scroll-content').appendChild(element[0]);
 
             ionic.requestAnimationFrame(function () {
               $timeout(function () {
@@ -117,23 +157,48 @@
                     scope.close();
                   }, scope.autoClose, false);
                 }
-              }, 20, false);
+              }, 20);
             });
           };
 
           //set small timeout to let ionic set the active/cached view
           $timeout(function () {
             scope.show();
-          }, 10, false);
+          }, 30, false);
 
           // Expose the scope on $ionContentBanner's return value for the sake of testing it.
           scope.close.$scope = scope;
 
+          cacheBanner(scope);
           return scope.close;
         }
 
+        var lastBannerFn;
+        /**
+         * @ngdoc method
+         * @name $ionicContentBanner#quick
+         * @param {String} text the text for the banner
+         * @param {String} [options] Options to pass to show method. Also accepts a strint "type" instead
+         * @description
+         * A shortcut for creating a banner from just a string. This will also close an banners that were previously opened with this shortcut.
+         * This could be improved to be configuratble through provider options, but for now it just have my preferred defaults baked in.
+       */
+        var quickBanner = function(text, options){
+          if ( angular.isString(options) ){
+            options = {type: options};
+          }
+          var opts = angular.extend({text: [text], position: 'bottom', autoClose: 3000, icon: '' }, options);
+          if ( angular.isDefined(lastBannerFn) ){
+            lastBannerFn();
+          }
+          lastBannerFn = contentBanner(opts);
+          return lastBannerFn;
+        };
+
         return {
-          show: contentBanner
+          show: contentBanner,
+          quick: quickBanner,
+          closeAll: closeAll
         };
       }]);
 
