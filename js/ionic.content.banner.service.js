@@ -36,6 +36,13 @@
         }
 
         function getActiveView (body) {
+
+          // if there is a modal put this in the modal
+          var modal = body.querySelector('ion-modal-view[class*="ng-enter-active"]');
+          if (modal != null && !angular.element(modal).hasClass('ng-leave')) {
+            return modal;
+          }
+
           // get the candidate active views
           var views = body.querySelectorAll('ion-view[nav-view="active"]');
 
