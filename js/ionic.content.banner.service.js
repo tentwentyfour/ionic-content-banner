@@ -91,6 +91,7 @@
           }, opts);
 
           // Compile the template
+          var click = scope.onClick;
           var transitionClass = 'content-banner-transition-' + scope.transition;
           var classes = 'content-banner ' + scope.type;
           if ( scope.position === 'bottom' ){
@@ -100,7 +101,7 @@
             }
           }
           classes += ' ' + transitionClass;
-          var element = scope.element = $compile('<ion-content-banner class="' + classes + '"></ion-content-banner>')(scope);
+          var element = scope.element = $compile('<ion-content-banner class="' + classes + '" ng-click='" + onClick + "'></ion-content-banner>')(scope);
           var body = $document[0].body;
 
           var stateChangeListenDone = scope.closeOnStateChange ?
