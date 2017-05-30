@@ -182,7 +182,6 @@ angular.module('jett.ionic.content.banner', ['ionic']);
 
             var contentDiv = getActiveView(body);
             if ( angular.isUndefined(contentDiv) ){
-              $log.info('content banner failed to show (no view):' + opts.text[0] );
               return;
             }
 
