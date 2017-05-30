@@ -1,6 +1,6 @@
 {
   "name": "ionic-content-banner",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A content banner directive for Ionic apps that animates in on the active ion-content",
   "author": "Devin Jett <djett41@gmail.com> (https://github.com/djett41)",
   "main": [

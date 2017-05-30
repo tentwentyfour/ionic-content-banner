@@ -14,7 +14,6 @@ angular.module('jett.ionic.content.banner', ['ionic']);
             var stopInterval;
 
             $scope.currentIndex = 0;
-            $scope.href = $attrs.href || '';
 
             if ($scope.text.length > 1) {
               stopInterval = $interval(function () {
