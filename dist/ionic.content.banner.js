@@ -75,21 +75,6 @@ angular.module('jett.ionic.content.banner', ['ionic']);
           return true;
         }
 
-        function getActiveView (body) {
-          // get the candidate active views
-          var views = body.querySelectorAll('ion-view[nav-view="active"]');
-
-          // only one candidate, so we just take it
-          if (views.length === 1) {
-            return views[0];
-          }
-
-          // convert the NodeList to an array, filter it using 'isActiveView' and return the first element
-          return Array.prototype.slice.call(views).filter(function (view) {
-            return isActiveView(view);
-          })[0];
-        }
-
         function cacheBanner(scope){
           bannerCache[cacheIndex] = scope;
           scope.bannerCacheIndex = cacheIndex;
@@ -141,7 +126,6 @@ angular.module('jett.ionic.content.banner', ['ionic']);
           }
           classes += ' ' + transitionClass;
           var element = scope.element = $compile('<ion-content-banner class="' + classes + '"></ion-content-banner>')(scope);
-          var body = $document[0].body;
 
           var stateChangeListenDone = scope.closeOnStateChange ?
             $rootScope.$on('$stateChangeSuccess', function() { scope.close(); }) :
@@ -180,12 +164,7 @@ angular.module('jett.ionic.content.banner', ['ionic']);
               return;
             }
 
-            var contentDiv = getActiveView(body);
-            if ( angular.isUndefined(contentDiv) ){
-              return;
-            }
-
-            contentDiv.querySelector('.scroll-content').appendChild(element[0]);
+            $document[0].body.appendChild(element[0]);
 
             ionic.requestAnimationFrame(function () {
               $timeout(function () {
