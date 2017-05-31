@@ -95,6 +95,8 @@ angular.module('jett.ionic.content.banner', ['ionic']);
             interval: 7000,
             type: 'info',
             $deregisterBackButton: angular.noop,
+            onClose: angular.noop,
+            onClick: angular.noop,
             closeOnStateChange: true,
             autoClose: null,
             position: null
@@ -127,6 +129,8 @@ angular.module('jett.ionic.content.banner', ['ionic']);
               return;
             }
             scope.removed = true;
+
+            scope.onClose();
 
             ionic.requestAnimationFrame(function () {
               element.removeClass('content-banner-in');

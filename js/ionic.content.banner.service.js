@@ -55,6 +55,8 @@
             interval: 7000,
             type: 'info',
             $deregisterBackButton: angular.noop,
+            onClose: angular.noop,
+            onClick: angular.noop,
             closeOnStateChange: true,
             autoClose: null,
             position: null
@@ -87,6 +89,8 @@
               return;
             }
             scope.removed = true;
+
+            scope.onClose();
 
             ionic.requestAnimationFrame(function () {
               element.removeClass('content-banner-in');
