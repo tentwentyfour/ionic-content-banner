@@ -21,6 +21,24 @@ angular.module('jett.ionic.content.banner', ['ionic']);
               }, $scope.interval);
             }
 
+            $scope.closeMessage = function ($index) {
+                $scope.currentIndex = $index - 1;
+
+                const payload = ($scope.payload || [])[$index];
+
+                $scope.text.splice($index, 1);
+
+                if ($scope.payload) {
+                    $scope.payload.splice($index, 1);
+                }
+
+                if (!$scope.text.length) {
+                    $scope.close();
+                }
+
+                $scope.onClose(payload);
+            };
+
             $scope.$on('$destroy', function() {
               $element.remove();
               if (stopInterval) {
@@ -32,7 +50,7 @@ angular.module('jett.ionic.content.banner', ['ionic']);
           '<a class="content-banner-text-wrapper" ng-click="onClick()">' +
             '<div ng-repeat="item in text track by $index" ng-class="{active: $index === currentIndex}" class="content-banner-text" ng-bind="item"></div>' +
           '</a>' +
-          '<button class="content-banner-close button button-icon icon {{::icon}}" ng-click="close()"></button>'
+          '<button class="content-banner-close button button-icon icon {{::icon}}" ng-click="closeMessage(currentIndex)"></button>'
         };
       }]);
 
@@ -94,6 +112,7 @@ angular.module('jett.ionic.content.banner', ['ionic']);
             transition: 'vertical',
             interval: 7000,
             type: 'info',
+            payload: null,
             $deregisterBackButton: angular.noop,
             onClose: angular.noop,
             onClick: angular.noop,
@@ -129,8 +148,6 @@ angular.module('jett.ionic.content.banner', ['ionic']);
               return;
             }
             scope.removed = true;
-
-            scope.onClose();
 
             ionic.requestAnimationFrame(function () {
               element.removeClass('content-banner-in');
