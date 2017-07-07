@@ -24,7 +24,7 @@ angular.module('jett.ionic.content.banner', ['ionic']);
             $scope.closeMessage = function ($index) {
                 $scope.currentIndex = $index - 1;
 
-                const payload = ($scope.payload || [])[$index];
+                var payload = ($scope.payload || [])[$index];
 
                 $scope.text.splice($index, 1);
 
